@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	
+	
+		<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+			<property name="url" value="jdbc:mysql://localhost:3306/myblog">
+			</property>
+			<property name="username" value="root"></property>
+			<property name="password" value="123456"></property>
+		</bean>
+		
+		
+		<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+			<property name="dataSource"><ref bean="datasource"/> </property>
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				</props>
+			</property>
+			<property name="mappingResources">
+				<list>
+					<value>cn/jxufe/entity/TEssay.hbm.xml</value>
+					<value>cn/jxufe/entity/TStage.hbm.xml</value>
+					<value>cn/jxufe/entity/TUser.hbm.xml</value>
+					<value>cn/jxufe/entity/TReply.hbm.xml</value>
+					<value>cn/jxufe/entity/TDiscuss.hbm.xml</value>
+				</list>
+			</property>
+		</bean>
+		<!-- 定义事务管理器（声明式的事务） -->   
+		 <bean id="transactionManager"   class="org.springframework.orm.hibernate3.HibernateTransactionManager">  
+			 <property name="sessionFactory" ref="sessionFactory" />   
+		 </bean>   
+   
+		<tx:advice id="txadvice" transaction-manager="transactionManager">  
+		    <tx:attributes>  
+		        <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />  
+		        <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />  
+		        <tx:method name="del*" propagation="REQUIRED" rollback-for="Exception"/>  
+		        <tx:method name="*" propagation="REQUIRED" read-only="true"/>  
+		    </tx:attributes>  
+		</tx:advice>  
+		  
+		<aop:config>  
+		    <aop:pointcut id="daoMethod" expression="execution(* cn.jxufe.service.*.*(..))"/>  
+		    <aop:advisor pointcut-ref="daoMethod" advice-ref="txadvice"/>  
+		</aop:config>  		
+		
+		
+		<bean id="stageDAO" class="cn.jxufe.dao.StageDAOImpl">
+			<property name="sessionFactory"><ref bean="sessionFactory" /> </property>
+		</bean>
+		<bean id="tessayDAO" class="cn.jxufe.dao.TEssayDAOImpl">
+			<property name="sessionFactory"><ref bean="sessionFactory" /> </property>
+		</bean>
+		<bean id="userDAO" class="cn.jxufe.dao.UserDAOImpl">
+			<property name="sessionFactory"><ref bean="sessionFactory" /> </property>
+		</bean>
+		<bean id="discussDAO" class="cn.jxufe.dao.DiscussDAOImpl">
+			<property name="sessionFactory"><ref bean="sessionFactory" /> </property>
+		</bean>
+		<bean id="replyDAO" class="cn.jxufe.dao.ReplyDAOImpl">
+			<property name="sessionFactory"><ref bean="sessionFactory" /> </property>
+		</bean>
+		<bean id="stageService" class="cn.jxufe.service.StageServiceImpl">
+			<property name="stageDAO"><ref bean="stageDAO"/> </property>
+		</bean>
+		<bean id="tessayService" class="cn.jxufe.service.TEssayServiceImpl">
+			<property name="tessayDAO"><ref bean="tessayDAO"></ref></property>
+		</bean>
+		<bean id="userService" class="cn.jxufe.service.UserServiceImpl">
+			<property name="userDAO"><ref bean="userDAO"></ref></property>
+		</bean>
+		<bean id="discussService" class="cn.jxufe.service.DiscussServiceImpl">
+			<property name="discussDAO"><ref bean="discussDAO"></ref></property>
+		</bean>
+		<bean id="replyService" class="cn.jxufe.service.ReplyServiceImpl">
+			<property name="replyDAO"><ref bean="replyDAO"></ref></property>
+		</bean>
+		<bean id="userAction" class="cn.jxufe.action.UserAction">
+			<property name="userService"><ref bean="userService"></ref></property>
+		</bean>
+		<bean id="mainLoadAction" class="cn.jxufe.action.MainLoadAction">
+			<property name="stageService"><ref bean="stageService" /> </property>
+		</bean>
+		<bean id="stageAction" class="cn.jxufe.action.StageAction">
+			<property name="stageService"><ref bean="stageService" /></property>
+		</bean>
+		<bean id="uploadImgAction" class="cn.jxufe.action.UploadImgAction">
+			<property name="tessayService"><ref bean="tessayService"></ref></property>
+		</bean>
+		<bean id="essayAction" class="cn.jxufe.action.EssayAction">
+			<property name="tessayService"><ref bean="tessayService"></ref></property>
+		</bean>
+		<bean id="discussAction" class="cn.jxufe.action.DiscussAction">
+			<property name="discussService"><ref bean="discussService"></ref></property>
+		</bean>
+		<bean id="replyAction" class="cn.jxufe.action.ReplyAction">
+			<property name="replyService"><ref bean="replyService"></ref></property>
+		</bean>
+</beans>

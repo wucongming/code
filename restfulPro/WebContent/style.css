@@ -1,0 +1,62 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 60rem;
+    height: 860px;
+    margin: 0 auto;
+}
+.class-time,.class-time ul{
+    float: left;
+    width: 3rem;
+}
+.class-time ul li{
+    width:  3rem;
+    height: 5rem;
+    text-align: center;
+    line-height: 5rem;
+    background: rgb(105, 207, 205);
+    color: white;
+    margin: 1px;
+}
+.morning{
+    height: 320px;
+}
+.afternoon {
+    margin-top: 30px;
+    height: 240px;
+}
+.evening {
+    margin-top: 30px;
+    height: 240px;
+}
+.class-content{
+    float: left;
+    width: 57rem;
+    height: 860px;
+    position:relative;
+}
+.class-content .morning,.afternoon,.evening {
+    width: 160px;
+}
+.class-content .day {
+    float: left;
+    margin-left: 2px;
+}
+.class-content span{
+    display: block;
+    margin:2px;
+    width: 160px;
+    height: 80px;
+    background: rgb(105, 207, 205);
+}
+.class-content span:hover{
+    background: rgb(255, 222, 90);
+    cursor: pointer;
+}
+#f {
+    width: 200px;
+    height: 100px;
+    background: white;
+}

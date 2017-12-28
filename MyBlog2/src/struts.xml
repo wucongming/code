@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0 //EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.multipart.maxSize" value="1073741824" />
+	
+	<package name="three" extends="json-default" namespace="/">
+		<action name="userAction_checkAccount" class="cn.jxufe.action.UserAction" method="checkAccount">
+			<result name="success" type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="layUIImageUploadAction" class="cn.jxufe.action.LayUIImageUploadAction">
+			<result name="success" type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+	</package>
+		<package name="four" extends="json-default" namespace="/user">
+		<action name="discussAction_add" class="cn.jxufe.action.DiscussAction" method="add">
+			<result name="add" type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="essayAction_othervisiable" class="cn.jxufe.action.EssayAction" method="othervisiable">
+			<result name="success" type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="main" extends="struts-default" namespace="/">
+		<action name="mainLoadAction" class="cn.jxufe.action.MainLoadAction">
+			<result name="success">/homePage.jsp</result>
+		</action>
+		<action name="essayAction_loadContent" method="loadContent" class="cn.jxufe.action.EssayAction">
+			<result name="content">/content.jsp</result>
+		</action>
+		<action name="userAction_*" method="{1}" class="cn.jxufe.action.UserAction">
+			<result name="success" type="chain">mainLoadAction</result>
+			<result name="error">/login.jsp</result>
+		</action>
+	</package>
+	
+	<package name="second" extends="struts-default" namespace="/user">
+		<action name="discussAction_*" class="cn.jxufe.action.DiscussAction" method="{1}">
+			<result type="chain" name="success">
+				<param name="actionName">essayAction_loadContent</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		<action name="replyAction_*" class="cn.jxufe.action.ReplyAction" method="{1}">
+			<result type="chain" name="success">
+				<param name="actionName">essayAction_loadContent</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		<action name="stageAction_*" class="cn.jxufe.action.StageAction" method="{1}" >
+			<result type="chain" name="success">
+				<param name="actionName">mainLoadAction</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		<action name="uploadImgAction" class="cn.jxufe.action.UploadImgAction">
+			<result type="chain" name="success">
+				<param name="actionName">mainLoadAction</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		<action name="essayAction_*" method="{1}" class="cn.jxufe.action.EssayAction">
+			<result type="chain" name="success">
+				<param name="actionName">mainLoadAction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="publish">/user/publish.jsp</result>
+			<result name="content">/content.jsp</result>
+		</action>
+	</package>
+</struts>
